@@ -1,0 +1,355 @@
+
+# Tables: User, Program, Exercise
+
+openapi: 3.1.0
+info:
+  title: Java API Final Project
+  description: Api file for the final project Bob's Bodybuilding
+  version: 1.0.0
+  contact:
+    name: Bob's bodybuilding
+
+servers:
+  - url: http://localhost:4000  # ska ändras
+tags:
+  - name: users
+  - name: programs
+  - name: exercises
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: Create a user
+      description: Create a new user account
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+      responses:
+        '201':
+          description: Successfully created a new user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: Get a list of every user
+      operationId: getUsers
+      responses:
+        '200':
+          description: Get a list of all users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+  /users/{id}:
+    put:
+      tags:
+        - users
+      summary: Update a user
+      description: Update an existing customer. For ease of implementation, all fields are required from the client.
+      operationId: updateCustomer
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the customer to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomer'
+      responses:
+        '201':
+          description: Successfully updated the specified customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    delete:
+      tags:
+        - customers
+      summary: Delete a customer
+      description: Delete an existing customer. When deleting data, it's useful to send the deleted record back to the client so they can re-create it if deletion was a mistake.
+      operationId: deleteCustomer
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the customer to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted the specified customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /movies:
+    post:
+      tags:
+        - movies
+      summary: Create a movie
+      description: Create a new movie.
+      operationId: createMovie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMovie'
+      responses:
+        '201':
+          description: Successfully created a new Movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+    get:
+      tags:
+        - movies
+      summary: Get all movies
+      description: Get a list of every movie.
+      operationId: getMovies
+      responses:
+        '200':
+          description: Successfully returned a list of all movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllMovies'
+  /movies/{id}:
+    put:
+      tags:
+        - movies
+      summary: Update a movie
+      description: Update an existing movie. For ease of implementation, all fields are required from the client.
+      operationId: updateMovie
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the movie to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMovie'
+      responses:
+        '201':
+          description: Successfully updated the specified movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+    delete:
+      tags:
+        - movies
+      summary: Delete a movie
+      description: Delete an existing movie. When deleting data, it's useful to send the deleted record back to the client so they can re-create it if deletion was a mistake.
+      operationId: deleteMovie
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the movie to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted the specified movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+
+  /movies/{id}/screenings:
+    post:
+      tags:
+        - screenings
+      summary: Create a screening
+      description: Create a screening for an existing movie.
+      operationId: createScreening
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the movie to create a screening for
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScreening'
+      responses:
+        '201':
+          description: Successfully created a screening for the specified movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+    get:
+      tags:
+        - screenings
+      summary: Get all screenings
+      description: Get a list of every screening for a movie.
+      operationId: getScreenings
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the movie to retrieve the screenings for
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully returned a list of all screenings of the specified movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllScreenings'
+
+components:
+  schemas:
+    CreateCustomer:
+      type: object
+      required: [name, email, phone]
+      properties:
+        name:
+          type: string
+          example: "Chris Wolstenholme"
+        email:
+          type: string
+          example: "chris@muse.mu"
+        phone:
+          type: string
+          example: "+44729388192"
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Chris Wolstenholme"
+        email:
+          type: string
+          example: "chris@muse.mu"
+        phone:
+          type: string
+          example: "+44729388192"
+        createdAt:
+          type: string
+          format: DateTime
+          example: "2023-03-14T11:01:56.633+00:00"
+        updatedAt:
+          type: string
+          format: DateTime
+          example: "2023-03-14T11:01:56.633+00:00"
+    AllCustomers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Customer'
+
+    CreateMovie:
+      type: object
+      required: [ title, rating, description, runtimeMins ]
+      properties:
+        title:
+          type: string
+          example: "Dodgeball"
+        rating:
+          type: string
+          example: "PG-13"
+        description:
+          type: string
+          example: "The greatest movie ever made."
+        runtimeMins:
+          type: integer
+          example: 126
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Dodgeball"
+        rating:
+          type: string
+          example: "PG-13"
+        description:
+          type: string
+          example: "The greatest movie ever made."
+        runtimeMins:
+          type: integer
+          example: 126
+        createdAt:
+          type: string
+          format: DateTime
+          example: "2023-03-14T11:01:56.633+00:00"
+        updatedAt:
+          type: string
+          format: DateTime
+          example: "2023-03-14T11:01:56.633+00:00"
+    AllMovies:
+      type: array
+      items:
+        $ref: '#/components/schemas/Movie'
+
+    CreateScreening:
+      type: object
+      required: [ screenNumber, capacity, startsAt ]
+      properties:
+        screenNumber:
+          type: integer
+          example: 5
+        capacity:
+          type: integer
+          example: 40
+        startsAt:
+          type: string
+          format: DateTime
+          example: "2023-03-19 11:30:00+00:00"
+    Screening:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        screenNumber:
+          type: integer
+          example: 5
+        capacity:
+          type: integer
+          example: 40
+        startsAt:
+          type: string
+          format: DateTime
+          example: "2023-03-19T11:30:00.000+00:00"
+        createdAt:
+          type: string
+          format: DateTime
+          example: "2023-03-14T11:01:56.633+00:00"
+        updatedAt:
+          type: string
+          format: DateTime
+          example: "2023-03-14T11:01:56.633+00:00"
+    AllScreenings:
+      type: array
+      items:
+        $ref: '#/components/schemas/Screening'
