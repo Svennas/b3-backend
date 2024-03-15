@@ -1,9 +1,9 @@
 
-# Tables: User, Program, Exercise
+# Tables: User, Program, Exercise, ProgramExercise
 
 openapi: 3.1.0
 info:
-  title: Java API Final Project
+  title: Java API For Final Project
   description: Api file for the final project Bob's Bodybuilding
   version: 1.0.0
   contact:
@@ -15,242 +15,320 @@ tags:
   - name: users
   - name: programs
   - name: exercises
+  - name: programExercises
 paths:
-  /users:
+
+  ## sign up & log in paths?
+
+  /exercises: # delade exercises, tillgängligt för alla användare
+    get:
+      tags:
+        - exercises
+      summary: Get all shared exercises
+      description: Get a list of all shared exercises
+      operationId: getExercises
+      responses:
+        '200':
+          description: A list of all shared exercises
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllExercisesResponse'
+
+  /users: # används vid login / signup
     post:
       tags:
         - users
       summary: Create a user
       description: Create a new user account
       operationId: createUser
-      requestBody:
+      requestBody:  # lägg till request body för fält: firstname, lastname, username, password
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/createUser'
+              $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '201':
           description: Successfully created a new user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/CreateUserResponse'
     get:
       tags:
         - users
       summary: Get all users
-      description: Get a list of every user
+      description: Get a list of all users
       operationId: getUsers
       responses:
         '200':
-          description: Get a list of all users
+          description: A list of all users
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllUsers'
-  /users/{id}:
-    put:
-      tags:
-        - users
-      summary: Update a user
-      description: Update an existing customer. For ease of implementation, all fields are required from the client.
-      operationId: updateCustomer
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the customer to update
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCustomer'
-      responses:
-        '201':
-          description: Successfully updated the specified customer
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
-    delete:
-      tags:
-        - customers
-      summary: Delete a customer
-      description: Delete an existing customer. When deleting data, it's useful to send the deleted record back to the client so they can re-create it if deletion was a mistake.
-      operationId: deleteCustomer
-      parameters:
-        - name: id
-          in: path
-          description: The ID of the customer to delete
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successfully deleted the specified customer
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/AllUsersResponse'
 
-  /movies:
+
+  users/{userId}/programs:
     post:
       tags:
-        - movies
-      summary: Create a movie
-      description: Create a new movie.
-      operationId: createMovie
+        - programs
+      summary: Create a program
+      description: Create a new program with a title and a list of exercise objects
+      operationId: createProgram
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateMovie'
+              $ref: '#/components/schemas/CreateProgramRequest'
       responses:
         '201':
-          description: Successfully created a new Movie
+          description: Successfully created a new program
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/CreateProgramResponse'
     get:
       tags:
-        - movies
-      summary: Get all movies
-      description: Get a list of every movie.
-      operationId: getMovies
+        - programs
+      summary: Get all the user's programs
+      description: Get a list of all programs for the user
+      operationId: getPrograms
       responses:
         '200':
-          description: Successfully returned a list of all movies
+          description: Successfully returned a list of all programs
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllMovies'
-  /movies/{id}:
+                $ref: '#/components/schemas/GetAllProgramsResponse'
+
+  users/{userId}/programs/{programId}:
     put:
       tags:
-        - movies
-      summary: Update a movie
-      description: Update an existing movie. For ease of implementation, all fields are required from the client.
-      operationId: updateMovie
+        - programs
+      summary: Update a program
+      description: User updates an existing program. All fields are required from the client.
+      operationId: updateProgram
       parameters:
-        - name: id
+        - name: userId
           in: path
-          description: The ID of the movie to update
+          description: The ID of the user
           required: true
           schema:
             type: integer
-      requestBody:
+        - name: programId
+          in: path
+          description: The ID of the program to update
+          required: true
+          schema:
+            type: integer
+      requestBody:  # lägg till request body för fält: title och array av program exercise objects
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateMovie'
+              $ref: '#/components/schemas/UpdateProgramRequest'
       responses:
         '201':
-          description: Successfully updated the specified movie
+          description: Successfully updated the specified program
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/UpdateProgramResponse'
     delete:
       tags:
-        - movies
-      summary: Delete a movie
-      description: Delete an existing movie. When deleting data, it's useful to send the deleted record back to the client so they can re-create it if deletion was a mistake.
-      operationId: deleteMovie
+        - programs
+      summary: Delete a program
+      description: Delete an existing program
+      operationId: deleteProgram
       parameters:
-        - name: id
+        - name: userId
           in: path
-          description: The ID of the movie to delete
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          description: The ID of the program to update
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: Successfully deleted the specified movie
+          description: Successfully deleted the specified program
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/Program'
 
-  /movies/{id}/screenings:
+  users/{userId}/programs/{programId}/programexercises:
     post:
       tags:
         - screenings
-      summary: Create a screening
-      description: Create a screening for an existing movie.
-      operationId: createScreening
+      summary: Create a program exercise
+      description: Create a program exercise for an existing program
+      operationId: createProgramExercise
       parameters:
-        - name: id
+        - name: userId
           in: path
-          description: The ID of the movie to create a screening for
+          description: The ID of the user
           required: true
           schema:
             type: integer
-      requestBody:
+        - name: programId
+          in: path
+          description: The ID of the program to add a program exercise to
+          required: true
+          schema:
+            type: integer
+      requestBody:  # lägg till title, desc, sets, reps
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateScreening'
+              $ref: '#/components/schemas/CreateProgramexerciseRequest'
       responses:
         '201':
-          description: Successfully created a screening for the specified movie
+          description: Successfully created a program exercise for the specified program
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Screening'
+                $ref: '#/components/schemas/CreateProgramexerciseResponse'
     get:
       tags:
-        - screenings
-      summary: Get all screenings
-      description: Get a list of every screening for a movie.
-      operationId: getScreenings
+        - programexercises
+      summary: Get all programexercises
+      description: Get a list of all programexercises for the specified program
+      operationId: getProgramexercises
       parameters:
-        - name: id
+        - name: userId
           in: path
-          description: The ID of the movie to retrieve the screenings for
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          description: The ID of the program to add a program exercise to
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: Successfully returned a list of all screenings of the specified movie
+          description: Successfully returned a list of all program exercises of the specified program
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllScreenings'
+                $ref: '#/components/schemas/AllProgramexercisesResponse'
+
+  users/{userId}/programs/{programId}/programexercises/{programexerciseId}:
+    put:
+      tags:
+        - programexercises
+      summary: Update a programexercise
+      description: User updates an existing program's specified program exercise. All fields are required from the client.
+      operationId: updateProgramexercise
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          description: The ID of the program to update
+          required: true
+          schema:
+            type: integer
+        - name: programexerciseId
+          in: path
+          description: The ID of the program exercise to update
+          required: true
+          schema:
+            type: integer
+      requestBody: # lägg till request body för fält: title och array av program exercise objects
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProgramexerciseRequest'
+      responses:
+        '201':
+          description: Successfully updated the specified program exercise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProgramexerciseResponse'
+    delete:
+      tags:
+        - programexercises
+      summary: Delete a program exercise
+      description: Delete a program exercise from a specified program
+      operationId: deleteProgramexercise
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          description: The ID of the program to update
+          required: true
+          schema:
+            type: integer
+        - name: programexerciseId
+          in: path
+          description: The ID of the program exercise to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted the specified program exercise from the specified program
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgramexerciseResponse'
+
+
 
 components:
   schemas:
-    CreateCustomer:
+    CreateUser:
       type: object
-      required: [name, email, phone]
+      required: [firstName, lastName, userName, password]
       properties:
+        firstName:
+          type: string
+          example: "Chris"
+        lastName:
+          type: string
+          example: "Wolstenholme"
+        userName:
+          type: string
+          example: "chriswol"
+        password:
+          type: string
+          example: "password"
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
         name:
           type: string
-          example: "Chris Wolstenholme"
+          example: "Chris"
         email:
           type: string
           example: "chris@muse.mu"
         phone:
           type: string
           example: "+44729388192"
-    Customer:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Chris Wolstenholme"
-        email:
-          type: string
-          example: "chris@muse.mu"
-        phone:
-          type: string
-          example: "+44729388192"
         createdAt:
           type: string
           format: DateTime
@@ -259,97 +337,54 @@ components:
           type: string
           format: DateTime
           example: "2023-03-14T11:01:56.633+00:00"
-    AllCustomers:
+
+    AllUsers:
       type: array
       items:
-        $ref: '#/components/schemas/Customer'
+        $ref: '#/components/schemas/User'
 
-    CreateMovie:
+
+
+    CreateProgramRequest:
       type: object
-      required: [ title, rating, description, runtimeMins ]
       properties:
         title:
           type: string
-          example: "Dodgeball"
-        rating:
-          type: string
-          example: "PG-13"
-        description:
-          type: string
-          example: "The greatest movie ever made."
-        runtimeMins:
-          type: integer
-          example: 126
-    Movie:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        title:
-          type: string
-          example: "Dodgeball"
-        rating:
-          type: string
-          example: "PG-13"
-        description:
-          type: string
-          example: "The greatest movie ever made."
-        runtimeMins:
-          type: integer
-          example: 126
-        createdAt:
-          type: string
-          format: DateTime
-          example: "2023-03-14T11:01:56.633+00:00"
-        updatedAt:
-          type: string
-          format: DateTime
-          example: "2023-03-14T11:01:56.633+00:00"
-    AllMovies:
-      type: array
-      items:
-        $ref: '#/components/schemas/Movie'
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+      required:
+        - title
+        - exercises
 
-    CreateScreening:
-      type: object
-      required: [ screenNumber, capacity, startsAt ]
-      properties:
-        screenNumber:
-          type: integer
-          example: 5
-        capacity:
-          type: integer
-          example: 40
-        startsAt:
-          type: string
-          format: DateTime
-          example: "2023-03-19 11:30:00+00:00"
-    Screening:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        screenNumber:
-          type: integer
-          example: 5
-        capacity:
-          type: integer
-          example: 40
-        startsAt:
-          type: string
-          format: DateTime
-          example: "2023-03-19T11:30:00.000+00:00"
-        createdAt:
-          type: string
-          format: DateTime
-          example: "2023-03-14T11:01:56.633+00:00"
-        updatedAt:
-          type: string
-          format: DateTime
-          example: "2023-03-14T11:01:56.633+00:00"
-    AllScreenings:
+      Exercise:
+        type: object
+        properties:
+          title:
+            type: string
+          description:
+            type: string
+          sets:
+            type: integer
+          reps:
+            type: integer
+
+      ProgramResponse:
+        type: object
+        properties:
+          id:
+            type: string  # alt. integer
+          title:
+            type: string
+          exercises:
+            type: array
+            items:
+              $ref: '#/components/schemas/Exercise'
+
+    AllPrograms:
       type: array
       items:
-        $ref: '#/components/schemas/Screening'
+        $ref: '#/components/schemas/Program'
+
+
