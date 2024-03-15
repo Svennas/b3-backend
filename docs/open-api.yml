@@ -1,6 +1,3 @@
-
-# Tables: User, Program, Exercise, ProgramExercise
-
 openapi: 3.1.0
 info:
   title: Java API For Final Project
@@ -19,6 +16,7 @@ tags:
 paths:
 
   ## sign up & log in paths?
+  ## lägga till error responses?
 
   /exercises: # delade exercises, tillgängligt för alla användare
     get:
@@ -34,6 +32,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllExercisesResponse'
+  /exercises/{exerciseId}:
+    get:
+      tags:
+        - exercises
+      summary: Get a shared exercise by id
+      description: Get a shared exercise by id
+      operationId: getExerciseById
+      responses:
+        '200':
+          description: An exercise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exercise'
 
   /users: # används vid login / signup
     post:
@@ -42,7 +54,7 @@ paths:
       summary: Create a user
       description: Create a new user account
       operationId: createUser
-      requestBody:  # lägg till request body för fält: firstname, lastname, username, password
+      requestBody:  # Alla required fields (firstname, lastname, username, password) finns i schemat längst ner i filen under CreateUserRequest
         required: true
         content:
           application/json:
@@ -54,7 +66,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateUserResponse'
+                $ref: '#/components/schemas/User' # response är ett User objekt
     get:
       tags:
         - users
@@ -69,6 +81,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/AllUsersResponse'
 
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: Get a user by id
+      description: Get a user by id
+      operationId: getUserById
+      responses:
+        '200':
+          description: A user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 
   users/{userId}/programs:
     post:
@@ -89,7 +115,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateProgramResponse'
+                $ref: '#/components/schemas/Program'
     get:
       tags:
         - programs
@@ -102,9 +128,35 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetAllProgramsResponse'
+                $ref: '#/components/schemas/AllProgramsResponse'
 
   users/{userId}/programs/{programId}:
+    get:
+      tags:
+        - programs
+      summary: Get a program
+      description: Get a specific program for the user
+      operationId: getProgram
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          description: The ID of the program to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved the specified program
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
     put:
       tags:
         - programs
@@ -124,7 +176,8 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:  # lägg till request body för fält: title och array av program exercise objects
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -135,7 +188,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateProgramResponse'
+                $ref: '#/components/schemas/Program'
     delete:
       tags:
         - programs
@@ -166,7 +219,7 @@ paths:
   users/{userId}/programs/{programId}/programexercises:
     post:
       tags:
-        - screenings
+        - programexercises
       summary: Create a program exercise
       description: Create a program exercise for an existing program
       operationId: createProgramExercise
@@ -183,7 +236,7 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:  # lägg till title, desc, sets, reps
+      requestBody:
         required: true
         content:
           application/json:
@@ -195,7 +248,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateProgramexerciseResponse'
+                $ref: '#/components/schemas/Programexercise'
     get:
       tags:
         - programexercises
@@ -224,6 +277,38 @@ paths:
                 $ref: '#/components/schemas/AllProgramexercisesResponse'
 
   users/{userId}/programs/{programId}/programexercises/{programexerciseId}:
+    get:
+      tags:
+        - programexercises
+      summary: Get a programexercise
+      description: Get a specific programexercise from the program
+      operationId: getProgramexercise
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+        - name: programId
+          in: path
+          description: The ID of the program to retrieve
+          required: true
+          schema:
+            type: integer
+        - name: programexerciseId
+          in: path
+          description: The ID of the program exercise to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved the specified program exercise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Programexercise'
     put:
       tags:
         - programexercises
@@ -249,7 +334,8 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody: # lägg till request body för fält: title och array av program exercise objects
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -260,7 +346,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateProgramexerciseResponse'
+                $ref: '#/components/schemas/Programexercise'
     delete:
       tags:
         - programexercises
@@ -292,13 +378,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProgramexerciseResponse'
+                $ref: '#/components/schemas/Programexercise'
 
 
 
 components:
   schemas:
-    CreateUser:
+    CreateUserRequest:
       type: object
       required: [firstName, lastName, userName, password]
       properties:
@@ -314,31 +400,35 @@ components:
         password:
           type: string
           example: "password"
+
     User:
       type: object
       properties:
         id:
           type: integer
           example: 1
-        name:
+        firstName:
           type: string
           example: "Chris"
-        email:
+        lastName:
           type: string
-          example: "chris@muse.mu"
-        phone:
+          example: "Wolstenholme"
+        userName:
           type: string
-          example: "+44729388192"
+          example: "chriswol"
+        password:
+          type: string
+          example: "password"
         createdAt:
           type: string
           format: DateTime
-          example: "2023-03-14T11:01:56.633+00:00"
+          example: "2024-03-14T11:01:56.633+00:00"    # createdAt och updatedAt krav på alla ?
         updatedAt:
           type: string
           format: DateTime
-          example: "2023-03-14T11:01:56.633+00:00"
+          example: "2024-03-14T11:01:56.633+00:00"
 
-    AllUsers:
+    AllUsersResponse:
       type: array
       items:
         $ref: '#/components/schemas/User'
@@ -347,44 +437,131 @@ components:
 
     CreateProgramRequest:
       type: object
-      properties:
-        title:
-          type: string
-        exercises:
-          type: array
-          items:
-            $ref: '#/components/schemas/Exercise'
       required:
         - title
         - exercises
+      properties:
+        title:
+          type: string
+          example: "My new program"
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Programexercise'
+
+    UpdateProgramRequest:
+      type: object
+      required:
+        - title
+        - exercises
+      properties:
+        title:
+          type: string
+          example: "My updated program"
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Programexercise'
 
       Exercise:
         type: object
         properties:
+          id:
+            type: integer
+            example: 1
           title:
             type: string
+            example: "Squat"
           description:
             type: string
-          sets:
-            type: integer
-          reps:
-            type: integer
+            example: "Lower body strength exercise"
 
-      ProgramResponse:
+      Program:
         type: object
         properties:
           id:
-            type: string  # alt. integer
+            type: integer # string i response?
           title:
             type: string
           exercises:
             type: array
             items:
-              $ref: '#/components/schemas/Exercise'
+              $ref: '#/components/schemas/Programexercise'
 
-    AllPrograms:
+    AllProgramsResponse:
       type: array
       items:
         $ref: '#/components/schemas/Program'
 
 
+    AllExercisesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Exercise'
+
+
+    Programexercise:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Squat"
+        description:
+          type: string
+          example: "Lower body strength exercise"
+        sets:
+          type: integer
+          example: 3
+        reps:
+          type: integer
+          example: 10
+
+    CreateProgramexerciseRequest:
+      type: object
+      required:
+        - title
+        - description
+        - sets
+        - reps
+      properties:
+        title:
+          type: string
+          example: "Squat"
+        description:
+          type: string
+          example: "Lower body strength exercise"
+        sets:
+          type: integer
+          example: 3
+        reps:
+          type: integer
+          example: 10
+
+    AllProgramexercisesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Programexercise'
+
+    UpdateProgramexerciseRequest:
+      type: object
+      required:
+        - title
+        - description
+        - sets
+        - reps
+      properties:
+        title:
+          type: string
+          example: "Squat 2.0"
+        description:
+          type: string
+          example: "Lower body strength exercise"
+        sets:
+          type: integer
+          example: 30
+        reps:
+          type: integer
+          example: 100
