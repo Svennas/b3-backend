@@ -53,7 +53,7 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Exercise> privateExercises;
 
-    @OneToMany(mappedBy = "shared_by")
+    @OneToMany(mappedBy = "shared_by")  //ManyToMany?
     @JsonIgnoreProperties("user")
     private List<Exercise> sharedExercises;
 

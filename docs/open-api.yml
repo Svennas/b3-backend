@@ -161,7 +161,7 @@ paths:
       tags:
         - programs
       summary: Update a program
-      description: User updates an existing program. All fields are required from the client.
+      description: User updates an existing program. All fields are required from the client (title & programexercises list)
       operationId: updateProgram
       parameters:
         - name: userId

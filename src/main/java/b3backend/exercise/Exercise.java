@@ -1,9 +1,7 @@
 package b3backend.exercise;
 
-import b3backend.programexercise.Programexercise;
 import b3backend.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,10 +35,11 @@ public class Exercise {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssXXX")
     private OffsetDateTime updatedAt;
 
-    // shared exercises
-    @ManyToOne
+    /* shared exercises
+    @ManyToMany // ManyToMany relation behöver ett extra table i databas
     @JoinColumn(name = "shared_by_id")
     private User sharedBy;
+    */
 
     // privata exercises
     @ManyToOne
