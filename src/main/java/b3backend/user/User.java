@@ -1,6 +1,5 @@
 package b3backend.user;
 
-//import com.booleanuk.api.cinema.ticket.Ticket;
 import b3backend.exercise.Exercise;
 import b3backend.program.Program;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -49,6 +48,7 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Program> programs;
 
+    /*
     @OneToMany(mappedBy = "user")
     @JsonIgnoreProperties("user")
     private List<Exercise> privateExercises;
@@ -56,6 +56,7 @@ public class User {
     @OneToMany(mappedBy = "shared_by")  //ManyToMany?
     @JsonIgnoreProperties("user")
     private List<Exercise> sharedExercises;
+     */
 
     @PrePersist
     public void onCreate() {
