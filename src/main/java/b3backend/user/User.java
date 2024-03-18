@@ -34,16 +34,6 @@ public class User {
     @Column
     private String password;
 
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssXXX")
-    private OffsetDateTime createdAt;
-
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssXXX")
-    private OffsetDateTime updatedAt;
-
     @OneToMany(mappedBy = "user")
     @JsonIgnoreProperties("user")
     private List<Program> programs;
@@ -57,18 +47,6 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Exercise> sharedExercises;
      */
-
-    @PrePersist
-    public void onCreate() {
-        OffsetDateTime creationDate = OffsetDateTime.now();
-        this.createdAt = creationDate;
-        this.updatedAt = creationDate;
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = OffsetDateTime.now();
-    }
 
     public User(String firstName, String lastName, String userName, String password) {
         this.firstName = firstName;

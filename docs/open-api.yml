@@ -88,6 +88,13 @@ paths:
       summary: Get a user by id
       description: Get a user by id
       operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: A user
@@ -103,6 +110,13 @@ paths:
       summary: Create a program
       description: Create a new program with a title and a list of exercise objects
       operationId: createProgram
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -122,6 +136,13 @@ paths:
       summary: Get all the user's programs
       description: Get a list of all programs for the user
       operationId: getPrograms
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Successfully returned a list of all programs
@@ -463,30 +484,30 @@ components:
           items:
             $ref: '#/components/schemas/Programexercise'
 
-      Exercise:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 1
-          title:
-            type: string
-            example: "Squat"
-          description:
-            type: string
-            example: "Lower body strength exercise"
+    Exercise:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Squat"
+        description:
+          type: string
+          example: "Lower body strength exercise"
 
-      Program:
-        type: object
-        properties:
-          id:
-            type: integer # string i response?
-          title:
-            type: string
-          exercises:
-            type: array
-            items:
-              $ref: '#/components/schemas/Programexercise'
+    Program:
+      type: object
+      properties:
+        id:
+          type: integer # string i response?
+        title:
+          type: string
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Programexercise'
 
     AllProgramsResponse:
       type: array

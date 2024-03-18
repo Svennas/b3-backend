@@ -2,6 +2,7 @@ package b3backend.programexercise;
 
 import b3backend.program.Program;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "programsexercises")
+@Table(name = "programexercises")
 public class Programexercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,32 +31,11 @@ public class Programexercise {
     @Column
     private int reps;
 
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssXXX")
-    private OffsetDateTime createdAt;
-
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssXXX")
-    private OffsetDateTime updatedAt;
-
-    @ManyToOne  //en program exercise tillhör endast ett program. Ett program kan ha många program exercises
+    @ManyToOne  //ett program exercise tillhör endast ett program. Ett program kan ha många program exercises
     @JoinColumn(name = "program_id", nullable = false)
+    @JsonIgnore //ta bort när man fetchar ett program exercise by id
     private Program program;
 
-    @PrePersist
-    public void onCreate() {
-        OffsetDateTime currentTime = OffsetDateTime.now();
-        this.createdAt = currentTime;
-        this.updatedAt = currentTime;
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        OffsetDateTime currentTime = OffsetDateTime.now();
-        this.updatedAt = currentTime;
-    }
 
     public Programexercise(String title, String description, int sets, int reps) {
         this.title = title;
