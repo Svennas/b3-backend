@@ -176,8 +176,8 @@ public class ProgramexerciseController {
         return new ResponseEntity<>(programexerciseResponse, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{programId}")
-    public ResponseEntity<?> deleteProgram(@PathVariable int userId, @PathVariable int programId) {
+    @DeleteMapping("/{programexerciseId}")
+    public ResponseEntity<?> deleteProgramexercise(@PathVariable int userId, @PathVariable int programId, @PathVariable int programexerciseId) {
         User user = this.userRepository.findById(userId).orElse(null);
 
         if (user == null) {
@@ -189,23 +189,37 @@ public class ProgramexerciseController {
 
         List<Program> allPrograms = user.getPrograms();
 
-        Program programToBeDeleted = allPrograms.stream()
+        Program program = allPrograms.stream()
                 .filter(p -> p.getId() == programId)
                 .findFirst()
                 .orElse(null);
 
-        if (programToBeDeleted == null) {
+        if (program == null) {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.set("No program with that id found.");
 
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
-        this.programRepository.delete(programToBeDeleted);
+        List<Programexercise> allProgramExercises = program.getProgramExercises();
 
-        ProgramResponse programResponse = new ProgramResponse();
-        programResponse.set(programToBeDeleted);
+        Programexercise programexerciseToBeDeleted = allProgramExercises.stream()
+                .filter(p -> p.getId() == programexerciseId)
+                .findFirst()
+                .orElse(null);
 
-        return new ResponseEntity<>(programResponse, HttpStatus.CREATED);
+        if (programexerciseToBeDeleted == null) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.set("No program exercise with that id found.");
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        this.programexerciseRepository.delete(programexerciseToBeDeleted);
+
+        ProgramexerciseResponse programexerciseResponse = new ProgramexerciseResponse();
+        programexerciseResponse.set(programexerciseToBeDeleted);
+
+        return new ResponseEntity<>(programexerciseResponse, HttpStatus.CREATED);
     }
 }

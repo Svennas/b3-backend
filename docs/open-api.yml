@@ -47,14 +47,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Exercise'
 
-  /users: # används vid login / signup
+  /users:
     post:
       tags:
         - users
       summary: Create a user
       description: Create a new user account
       operationId: createUser
-      requestBody:  # Alla required fields (firstname, lastname, username, password) finns i schemat längst ner i filen under CreateUserRequest
+      requestBody:
         required: true
         content:
           application/json:
@@ -66,7 +66,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User' # response är ett User objekt
+                $ref: '#/components/schemas/User'
     get:
       tags:
         - users
@@ -88,6 +88,13 @@ paths:
       summary: Get a user by id
       description: Get a user by id
       operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: A user
@@ -96,13 +103,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
-  users/{userId}/programs:
+  /users/{userId}/programs:
     post:
       tags:
         - programs
       summary: Create a program
       description: Create a new program with a title and a list of exercise objects
       operationId: createProgram
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -122,6 +136,13 @@ paths:
       summary: Get all the user's programs
       description: Get a list of all programs for the user
       operationId: getPrograms
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Successfully returned a list of all programs
@@ -130,7 +151,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AllProgramsResponse'
 
-  users/{userId}/programs/{programId}:
+  /users/{userId}/programs/{programId}:
     get:
       tags:
         - programs
@@ -216,7 +237,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Program'
 
-  users/{userId}/programs/{programId}/programexercises:
+  /users/{userId}/programs/{programId}/programexercises:
     post:
       tags:
         - programexercises
@@ -276,7 +297,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AllProgramexercisesResponse'
 
-  users/{userId}/programs/{programId}/programexercises/{programexerciseId}:
+  /users/{userId}/programs/{programId}/programexercises/{programexerciseId}:
     get:
       tags:
         - programexercises
@@ -386,7 +407,7 @@ components:
   schemas:
     CreateUserRequest:
       type: object
-      required: [firstName, lastName, userName, password]
+      required: [ firstName, lastName, userName, password ]
       properties:
         firstName:
           type: string
@@ -463,41 +484,25 @@ components:
           items:
             $ref: '#/components/schemas/Programexercise'
 
-      Exercise:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 1
-          title:
-            type: string
-            example: "Squat"
-          description:
-            type: string
-            example: "Lower body strength exercise"
 
-      Program:
-        type: object
-        properties:
-          id:
-            type: integer # string i response?
-          title:
-            type: string
-          exercises:
-            type: array
-            items:
-              $ref: '#/components/schemas/Programexercise'
+
+    Program:
+      type: object
+      properties:
+        id:
+          type: integer # string i response?
+        title:
+          type: string
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Programexercise'
 
     AllProgramsResponse:
       type: array
       items:
         $ref: '#/components/schemas/Program'
 
-
-    AllExercisesResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/Exercise'
 
 
     Programexercise:
