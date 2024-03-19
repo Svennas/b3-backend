@@ -38,7 +38,7 @@ public class ProgramController {
 
         program.setUser(user);
 
-        //uppdatera nytt program i databas
+        //skapa nytt program i databas
         Program newProgram = this.programRepository.save(program);
 
         ProgramResponse programResponse = new ProgramResponse();

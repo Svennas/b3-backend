@@ -1,6 +1,5 @@
 package b3backend.user;
 
-import b3backend.program.Program;
 import b3backend.program.ProgramRepository;
 import b3backend.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,10 +31,10 @@ public class UserController {
     public ResponseEntity<UserListResponse> getAllUsers() {
         List<User> allUsers = this.userRepository.findAll();
 
-        UserListResponse customerListResponse = new UserListResponse();
-        customerListResponse.set(allUsers);
+        UserListResponse userListResponse = new UserListResponse();
+        userListResponse.set(allUsers);
 
-        return ResponseEntity.ok(customerListResponse);
+        return ResponseEntity.ok(userListResponse);
     }
 
     @GetMapping("/{userId}")

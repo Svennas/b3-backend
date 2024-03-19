@@ -7,21 +7,22 @@ info:
     name: Bob's bodybuilding
 
 servers:
-  - url: http://localhost:4000  # ska ändras
+  - url: http://localhost:4000  # ska ändras vid online deploy
 tags:
   - name: users
   - name: programs
-  - name: exercises
+  - name: privateExercises
+  - name: sharedExercises
   - name: programExercises
 paths:
 
   ## sign up & log in paths?
   ## lägga till error responses?
 
-  /exercises: # delade exercises, tillgängligt för alla användare
+  /sharedexercises: # delade exercises, tillgängligt för alla användare
     get:
       tags:
-        - exercises
+        - sharedExercises
       summary: Get all shared exercises
       description: Get a list of all shared exercises
       operationId: getExercises
@@ -32,13 +33,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllExercisesResponse'
-  /exercises/{exerciseId}:
+  /sharedexercises/{exerciseId}:
     get:
       tags:
-        - exercises
+        - sharedExercises
       summary: Get a shared exercise by id
       description: Get a shared exercise by id
       operationId: getExerciseById
+      parameters:
+        - name: exerciseId
+          in: path
+          description: The ID of the exercise
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: An exercise
@@ -102,6 +110,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+
+  /users/{userId}/privateexercises:
+    post:
+      tags:
+        - privateExercises
+      summary: Create a private exercise
+      description: Create a new private exercise
+      operationId: createExercise
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExerciseRequest'
+      responses:
+        '201':
+          description: Successfully created a new program
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exercise'
+    get:
+      tags:
+        - privateExercises
+      summary: Get all the user's private exercises
+      description: Get a list of all private exercises for the user
+      operationId: getExercises
+      parameters:
+        - name: userId
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully returned a list of all exercises
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllExercisesResponse'
+
 
   /users/{userId}/programs:
     post:
@@ -485,12 +542,11 @@ components:
             $ref: '#/components/schemas/Programexercise'
 
 
-
     Program:
       type: object
       properties:
         id:
-          type: integer # string i response?
+          type: integer
         title:
           type: string
         exercises:
@@ -503,6 +559,37 @@ components:
       items:
         $ref: '#/components/schemas/Program'
 
+
+    Exercise:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Yoga The Camel"
+        description:
+          type: string
+          example: "For a strong chest and core"
+
+    CreateExerciseRequest:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          example: "Yoga The Camel"
+        description:
+          type: string
+          example: "For a strong chest and core"
+
+    AllExercisesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Exercise'
 
 
     Programexercise:
