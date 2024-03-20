@@ -91,4 +91,36 @@ public class PrivateExerciseController {
 
         return new ResponseEntity<>(exerciseResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{privateexerciseId}")
+    public ResponseEntity<?> deleteExerciseById(@PathVariable int userId, @PathVariable int privateexerciseId) {
+        User user = this.userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.set("No user with that id found.");
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        List<Privateexercise> allExercises = user.getPrivateExercises();
+
+        Privateexercise exerciseToDelete = allExercises.stream()
+                .filter(p -> p.getId() == privateexerciseId)
+                .findFirst()
+                .orElse(null);
+
+        if (exerciseToDelete == null) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.set("No private exercise with that id found.");
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+        this.privateExerciseRepository.delete(exerciseToDelete);
+
+        ExerciseResponse exerciseResponse = new ExerciseResponse();
+        exerciseResponse.set(exerciseToDelete);
+
+        return new ResponseEntity<>(exerciseResponse, HttpStatus.CREATED);
+    }
 }

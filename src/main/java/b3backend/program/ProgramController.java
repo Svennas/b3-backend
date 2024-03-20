@@ -178,8 +178,6 @@ public class ProgramController {
 
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
-        System.out.println("UserID: " + userId + " ProgramID: " + programId + " programToBeDeleted: " + programToBeDeleted);
-
 
         for (Programexercise exerciseToDelete : programToBeDeleted.getProgramExercises()) {
             for (Programexercise programexercise : this.programexerciseRepository.findAll()) {
