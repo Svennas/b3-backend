@@ -156,6 +156,8 @@ public class ProgramController {
     public ResponseEntity<?> deleteProgram(@PathVariable int userId, @PathVariable int programId) {
         User user = this.userRepository.findById(userId).orElse(null);
 
+        System.out.println("UserID: " + userId + " ProgramID: " + programId);
+
         if (user == null) {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.set("No user with that id found.");
@@ -176,6 +178,19 @@ public class ProgramController {
 
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
+        System.out.println("UserID: " + userId + " ProgramID: " + programId + " programToBeDeleted: " + programToBeDeleted);
+
+
+        for (Programexercise exerciseToDelete : programToBeDeleted.getProgramExercises()) {
+            for (Programexercise programexercise : this.programexerciseRepository.findAll()) {
+                if (programexercise.getId() == exerciseToDelete.getId()) {
+                    System.out.println("In loop, id is: " + programexercise.getId());
+                    this.programexerciseRepository.delete(programexercise);
+                }
+            }
+            programToBeDeleted.getProgramExercises().remove(exerciseToDelete);
+        }
+
 
         this.programRepository.delete(programToBeDeleted);
 
