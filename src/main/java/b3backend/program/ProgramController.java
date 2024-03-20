@@ -205,24 +205,16 @@ public class ProgramController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
-        for (Programexercise exerciseToDelete : programToBeDeleted.getProgramExercises()) {
-            for (Programexercise programexercise : this.programexerciseRepository.findAll()) {
-                if (programexercise.getId() == exerciseToDelete.getId()) {
-                    System.out.println("In loop, id is: " + programexercise.getId());
-                    this.programexerciseRepository.delete(programexercise);
-                }
-            }
-            programToBeDeleted.getProgramExercises().remove(exerciseToDelete);
-        }
-
-
-        for (Programexercise exerciseToDelete : programToBeDeleted.getProgramExercises()) {
+        Iterator<Programexercise> iterator = programToBeDeleted.getProgramExercises().iterator();
+        while (iterator.hasNext()) {
+            Programexercise exerciseToDelete = iterator.next();
             for (Programexercise programexercise : this.programexerciseRepository.findAll()) {
                 if (programexercise.getId() == exerciseToDelete.getId()) {
                     this.programexerciseRepository.delete(programexercise);
+                    break;
                 }
             }
-            programToBeDeleted.getProgramExercises().remove(exerciseToDelete);
+            iterator.remove();
         }
 
         this.programRepository.delete(programToBeDeleted);
