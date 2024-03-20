@@ -50,8 +50,13 @@ public class ProgramController {
         /*spara program id för program exercise*/
         for (Programexercise exercise : newProgram.getProgramExercises()) {
             System.out.println(exercise);
-            exercise.setProgram(newProgram);
-            this.programexerciseRepository.save(exercise);
+            Programexercise newProgramExercise = new Programexercise();
+            newProgramExercise.setTitle(exercise.getTitle());
+            newProgramExercise.setDescription(exercise.getDescription());
+            newProgramExercise.setSets(exercise.getSets());
+            newProgramExercise.setReps(exercise.getReps());
+            newProgramExercise.setProgram(newProgram);
+            this.programexerciseRepository.save(newProgramExercise);
         }
 
         ProgramResponse programResponse = new ProgramResponse();
