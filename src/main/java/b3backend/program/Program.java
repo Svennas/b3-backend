@@ -30,7 +30,7 @@ public class Program {
     @JsonIgnore //ta bort user details när man fetchar ett program by id
     private User user;
 
-    @OneToMany(mappedBy = "program")   //ett program har många program exercises
+    @OneToMany(mappedBy = "program")   //ett program har många program exercises.
     @JsonIgnoreProperties("program")
     private List<Programexercise> programExercises;
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)    //csrf
 @RestController
 @RequestMapping("/users/{userId}/programs/{programId}/programexercises")
 public class ProgramexerciseController {
