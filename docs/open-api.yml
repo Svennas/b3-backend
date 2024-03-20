@@ -15,9 +15,8 @@ tags:
   - name: sharedExercises
   - name: programExercises
 paths:
-
-  ## sign up & log in paths?
   ## lägga till error responses?
+  ## lägg till /auth/signin och /auth/signup
 
   /sharedexercises: # delade exercises, tillgängligt för alla användare
     get:
@@ -33,6 +32,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllExercisesResponse'
+
   /sharedexercises/{exerciseId}:
     get:
       tags:

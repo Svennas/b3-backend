@@ -1,5 +1,7 @@
 package b3backend.program;
 
+import b3backend.programexercise.Programexercise;
+import b3backend.programexercise.ProgramexerciseRepository;
 import b3backend.response.ErrorResponse;
 import b3backend.response.ProgramListResponse;
 import b3backend.response.ProgramResponse;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)    //csrf
 @RestController
 @RequestMapping("/users/{userId}/programs")
 public class ProgramController {
@@ -20,6 +23,9 @@ public class ProgramController {
     private UserRepository userRepository;
     @Autowired
     private ProgramRepository programRepository;
+    @Autowired
+    private ProgramexerciseRepository programexerciseRepository;
+
 
     @PostMapping
     public ResponseEntity<?> createProgram(@RequestBody Program program, @PathVariable int userId) {
@@ -40,6 +46,13 @@ public class ProgramController {
 
         //skapa nytt program i databas
         Program newProgram = this.programRepository.save(program);
+
+        /*spara program id för program exercise*/
+        for (Programexercise exercise : newProgram.getProgramExercises()) {
+            System.out.println(exercise);
+            exercise.setProgram(newProgram);
+            this.programexerciseRepository.save(exercise);
+        }
 
         ProgramResponse programResponse = new ProgramResponse();
         programResponse.set(newProgram);

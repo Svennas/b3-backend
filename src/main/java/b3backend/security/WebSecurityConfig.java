@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                 .exceptionHandling((exception) -> exception.authenticationEntryPoint(this.unauthorisedHandler))
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //Stateless = doesn't depend on previous things
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/auth/**").permitAll()   //anyone can sign in. ** means zero or more folders within this directory
+                        .requestMatchers("/auth/**").permitAll()   //anyone can sign in and sign up. ** means zero or more folders within this directory
                         .anyRequest().authenticated()   //authenticate for any other request
                 );
 
