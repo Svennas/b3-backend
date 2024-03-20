@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)    //csrf
@@ -141,8 +142,33 @@ public class ProgramController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
+        //ta bort gamla program exercises ur databas
+        Iterator<Programexercise> iterator = programToBeUpdated.getProgramExercises().iterator();
+        while (iterator.hasNext()) {
+            Programexercise exerciseToDelete = iterator.next();
+            for (Programexercise programexercise : this.programexerciseRepository.findAll()) {
+                if (programexercise.getId() == exerciseToDelete.getId()) {
+                    this.programexerciseRepository.delete(programexercise);
+                    break;
+                }
+            }
+            iterator.remove();
+        }
+
         programToBeUpdated.setTitle(program.getTitle());
         programToBeUpdated.setProgramExercises(program.getProgramExercises());
+
+        //skapa nya program exercises och lägg in i databas
+        for (Programexercise exercise : programToBeUpdated.getProgramExercises()) {
+            System.out.println(exercise);
+            Programexercise newProgramExercise = new Programexercise();
+            newProgramExercise.setTitle(exercise.getTitle());
+            newProgramExercise.setDescription(exercise.getDescription());
+            newProgramExercise.setSets(exercise.getSets());
+            newProgramExercise.setReps(exercise.getReps());
+            newProgramExercise.setProgram(programToBeUpdated);
+            this.programexerciseRepository.save(newProgramExercise);
+        }
 
         Program updatedProgram = this.programRepository.save(programToBeUpdated);
 
@@ -175,6 +201,15 @@ public class ProgramController {
             errorResponse.set("No program with that id found.");
 
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        for (Programexercise exerciseToDelete : programToBeDeleted.getProgramExercises()) {
+            for (Programexercise programexercise : this.programexerciseRepository.findAll()) {
+                if (programexercise.getId() == exerciseToDelete.getId()) {
+                    this.programexerciseRepository.delete(programexercise);
+                }
+            }
+            programToBeDeleted.getProgramExercises().remove(exerciseToDelete);
         }
 
         this.programRepository.delete(programToBeDeleted);
