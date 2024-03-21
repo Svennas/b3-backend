@@ -15,9 +15,6 @@ tags:
   - name: sharedExercises
   - name: programExercises
 paths:
-  ## lägga till error responses?
-  ## lägg till /auth/signin och /auth/signup
-
   /sharedexercises: # delade exercises, tillgängligt för alla användare
     get:
       tags:
@@ -143,7 +140,7 @@ paths:
         - privateExercises
       summary: Get all the user's private exercises
       description: Get a list of all private exercises for the user
-      operationId: getExercises
+      operationId: getPrivateExercises
       parameters:
         - name: userId
           in: path
@@ -297,7 +294,7 @@ paths:
   /users/{userId}/programs/{programId}/programexercises:
     post:
       tags:
-        - programexercises
+        - programExercises
       summary: Create a program exercise
       description: Create a program exercise for an existing program
       operationId: createProgramExercise
@@ -329,7 +326,7 @@ paths:
                 $ref: '#/components/schemas/Programexercise'
     get:
       tags:
-        - programexercises
+        - programExercises
       summary: Get all programexercises
       description: Get a list of all programexercises for the specified program
       operationId: getProgramexercises
@@ -357,7 +354,7 @@ paths:
   /users/{userId}/programs/{programId}/programexercises/{programexerciseId}:
     get:
       tags:
-        - programexercises
+        - programExercises
       summary: Get a programexercise
       description: Get a specific programexercise from the program
       operationId: getProgramexercise
@@ -389,7 +386,7 @@ paths:
                 $ref: '#/components/schemas/Programexercise'
     put:
       tags:
-        - programexercises
+        - programExercises
       summary: Update a programexercise
       description: User updates an existing program's specified program exercise. All fields are required from the client.
       operationId: updateProgramexercise
@@ -427,7 +424,7 @@ paths:
                 $ref: '#/components/schemas/Programexercise'
     delete:
       tags:
-        - programexercises
+        - programExercises
       summary: Delete a program exercise
       description: Delete a program exercise from a specified program
       operationId: deleteProgramexercise

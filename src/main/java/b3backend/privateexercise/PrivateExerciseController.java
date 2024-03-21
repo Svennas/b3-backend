@@ -121,6 +121,6 @@ public class PrivateExerciseController {
         ExerciseResponse exerciseResponse = new ExerciseResponse();
         exerciseResponse.set(exerciseToDelete);
 
-        return new ResponseEntity<>(exerciseResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(exerciseResponse, HttpStatus.OK);
     }
 }

@@ -36,7 +36,6 @@ public class Programexercise {
     @JsonIgnore //ta bort när man fetchar ett program exercise by id
     private Program program;
 
-
     public Programexercise(String title, String description, int sets, int reps) {
         this.title = title;
         this.description = description;

@@ -18,7 +18,7 @@ public class SharedexerciseController {
     SharedexerciseRepository sharedexerciseRepository;
 
     @GetMapping
-    public ResponseEntity<?> getAllSharedExercises() {
+    public ResponseEntity<SharedexerciseListResponse> getAllSharedExercises() {
         List<Sharedexercise> allExercises = sharedexerciseRepository.findAll();
 
         SharedexerciseListResponse sharedexerciseListResponse = new SharedexerciseListResponse();
